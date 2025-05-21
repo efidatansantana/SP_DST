@@ -1,0 +1,213 @@
+body{
+    background-color: #f7f5f5;
+    font-family: 'Lato','Roboto', sans-serif;
+    color: #5a5e60;
+    overflow:auto;
+}
+
+:root {
+    --primary: #299be4;
+    --bs-primary: #299be4 !important;
+}
+
+pre{
+    background-color: #232323;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+    color: white;
+}
+
+nav{
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.table-dark{
+    --bs-table-bg: var(--primary) !important;
+}
+
+.pos-stk{
+    position: sticky;
+    top: 0;
+    z-index: 99;
+}
+
+.btn{
+    --bs-btn-border-color: none !important;
+}
+
+.s{
+    text-decoration: line-through;
+}
+
+th{
+    cursor: pointer;
+}
+
+.s > td{
+    color: #5a5e60 !important;
+}
+
+.justify {
+    text-align: justify;
+}
+.nav{
+    border-radius: 4px;
+    border: none;
+}
+
+.text-purple {
+    color: var(--primary);
+}
+
+.bg-purple {
+    background-color: var(--primary);
+    color: white;
+}
+
+.card-body > i{
+    font-size: 2rem !important;
+}
+
+.card{
+    height: 13.3rem !important;
+    animation: appear 1s ease-in-out;
+    transition: transform .7s;
+}
+
+.card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 11px rgba(33,33,33,.2);
+}
+
+
+@keyframes appear {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+label{
+    font-weight: bold !important;
+    color: #000 !important;
+}
+
+#viewContent select, #viewContent button {
+    font-size: 15px;
+}
+
+#viewContent h4 {
+    margin: 10px 0;
+}
+
+#viewContent .textAlignCenter {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.06);
+}
+
+#viewContent .textAlignCenter img {
+    display: none;
+    width: 100px;
+}
+
+#viewContent #message table {
+    width: 100%;
+}
+
+#viewContent #message table th {
+    text-align: left;
+    text-decoration: underline;
+}
+
+#estaciones table {
+    table-layout: fixed;
+}
+
+#estaciones table thead{
+    font-size: 1.1rem;
+}
+
+#estaciones thead{
+    position: sticky !important;
+    top: 0 !important;
+}
+
+#estaciones table th,
+table td {
+    padding: 0.75rem 1rem;
+    font-weight: normal;
+    text-align: center;
+}
+
+#search{
+    margin-top: 5px;
+    margin-bottom: 8px;
+    width: 48rem;
+    height: 2.5rem;
+}
+#mityc_logo{
+    margin-top: 25px;
+    margin-bottom: 8px;
+    display: inline;
+    float: left;
+}
+.home_select{
+    margin-bottom: 1rem;
+    width: 90%;
+}
+
+.productos-multiple{
+    width: 30rem !important;
+}
+
+.text-muted{
+    color: #5a5e60b6 !important;
+}
+
+/* media query to make responsive page */
+@media screen and (max-width: 768px) {
+    .container {
+        width: 100%;
+    }
+    #search{
+        width: 100%;
+    }
+    .home_select{
+        width: 100%;
+    }
+    .card{
+        height: 9rem !important;
+    }
+
+    .card > .card-body{
+        padding: 0px !important;
+    }
+
+    .filtros{
+        margin-bottom: 1rem;
+    }
+}
+
+@media only screen and (min-width : 1200px) {
+    .container { max-width: 1500px; } 
+}
+
+
+.input-group > .select2-container--bootstrap {
+    width: auto;
+    flex: 1 1 auto;
+}
+
+.input-group > .select2-container--bootstrap .select2-selection--single {
+    height: 100%;
+    line-height: inherit;
+    padding: 0.5rem 1rem;
+}
