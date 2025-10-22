@@ -407,13 +407,14 @@ class Funciones
      * Devulve un conteo de los precios no enviados
      */
     public function GetEnviosNoEnviados(){
-        $sql = "SELECT COUNT(*) AS TOTAL 
-            FROM MITYC_PRECIOS_ENVIO 
-            INNER JOIN MITYC_ESTABLECIMIENTOS 
-                ON MITYC_ESTABLECIMIENTOS.ID_EESS_MITYC = MITYC_PRECIOS_ENVIO.CODIGO_EESS 
-            WHERE MITYC_PRECIOS_ENVIO.ESTADO = 0 
-            AND MITYC_PRECIOS_ENVIO.ANULADO = 0 
-            AND MITYC_ESTABLECIMIENTOS.ESTADO = 1";
+        $sql = "SELECT COUNT(*) AS TOTAL
+                FROM MITYC_PRECIOS_ENVIO
+                INNER JOIN MITYC_ESTABLECIMIENTOS 
+                    ON MITYC_ESTABLECIMIENTOS.ID_EESS_MITYC = MITYC_PRECIOS_ENVIO.CODIGO_EESS
+                WHERE MITYC_PRECIOS_ENVIO.ESTADO = 0
+                AND MITYC_PRECIOS_ENVIO.ANULADO = 0
+                AND MITYC_ESTABLECIMIENTOS.ESTADO = 1
+                AND MITYC_PRECIOS_ENVIO.FECHA_INS >= (NOW() - INTERVAL 7 DAY);";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         $total = $stmt->fetchAll(PDO::FETCH_ASSOC);
