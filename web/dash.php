@@ -14,7 +14,7 @@
   <?php
     if($count > 0){
       echo '<div class="alert alert-danger" role="alert">
-      <i class="bi bi-exclamation-triangle-fill"></i> <b>'.$count.'</b> precios que no han podido ser enviados.
+      <i class="bi bi-exclamation-triangle-fill"></i> <b>'.$count.'</b> precios que no han podido ser enviados en los últimos 7 dias.
       </div>';
     }
   ?>
