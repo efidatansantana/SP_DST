@@ -44,7 +44,11 @@ $count = $funciones->GetEnviosNoEnviados();
         <?php
         if ($count > 0) {
             echo '<div class="alert alert-danger" role="alert">
+<<<<<<< HEAD
             <i class="bi bi-exclamation-triangle-fill"></i> <b>' . $count . '</b> precios que no han podido ser enviados.
+=======
+            <i class="bi bi-exclamation-triangle-fill"></i> <b>' . $count . '</b> precios que no han podido ser enviados en los últimos 7 dias.
+>>>>>>> f65840ef9d863562590a204e5f842e53a5131825
             </div>';
         }
         ?>

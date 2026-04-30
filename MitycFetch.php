@@ -44,7 +44,7 @@ class MitycFetch {
      */
     private function consultarPreciosMunicipio($codigoMunicipio)
     {
-        $api_url = 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroMunicipio/'.$codigoMunicipio;
+        $api_url = 'https://energia.serviciosmin.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroMunicipio/'.$codigoMunicipio;
 
         //iniciamos curl
         $curl = curl_init();
