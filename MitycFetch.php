@@ -4,7 +4,8 @@ include_once 'db/Conex.php';
 include_once 'CheckEnvios.php';
 include_once 'WriteLog.php';
 
-class MitycFetch {
+class MitycFetch
+{
     private $db;
     private $log;
 
@@ -33,10 +34,10 @@ class MitycFetch {
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         $municipios = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         foreach ($municipios as $municipio) {
             $this->consultarPreciosMunicipio($municipio['CODIGO']);
-        }   
+        }
     }
 
     /**
@@ -44,7 +45,7 @@ class MitycFetch {
      */
     private function consultarPreciosMunicipio($codigoMunicipio)
     {
-        $api_url = 'https://energia.serviciosmin.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroMunicipio/'.$codigoMunicipio;
+        $api_url = 'https://energia.serviciosmin.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroMunicipio/' . $codigoMunicipio;
 
         //iniciamos curl
         $curl = curl_init();
@@ -61,15 +62,15 @@ class MitycFetch {
         //aqui se ejecuta la peticion y se obtienen los datos
         $response = curl_exec($curl);
 
-        if(!$response){
+        if (!$response) {
             //si hay algun error en la peticion curl se muestra el error
             $error_msg = "No info";
             if (curl_errno($curl)) {
                 $error_msg = curl_error($curl);
             }
 
-            $this->log->write("Error al consultar los precios del municipio ".$codigoMunicipio." Err: ".$error_msg);
-        }else{
+            $this->log->write("Error al consultar los precios del municipio " . $codigoMunicipio . " Err: " . $error_msg);
+        } else {
             $this->procesarPrecios($response, $codigoMunicipio);
         }
 
@@ -82,12 +83,18 @@ class MitycFetch {
      */
     private function GetEstablecimientos($codigoMunicipio)
     {
-        $sql = "SELECT * FROM MITYC_ESTABLECIMIENTOS WHERE CODIGO_MUNICIPIO = :codigoMunicipio AND ESTADO = 1";
+        $sql = "SELECT mityc_establecimientos.* FROM mityc_establecimientos 
+            INNER JOIN establecimientos_empresa ON
+                establecimientos_empresa.CODIGO_EESS = mityc_establecimientos.ID_EESS_MITYC
+            WHERE 
+            CODIGO_MUNICIPIO = :codigoMunicipio AND 
+            establecimientos_empresa.ESTADO = 1
+            GROUP BY mityc_establecimientos.ID_EESS_MITYC, mityc_establecimientos.CODIGO_MUNICIPIO";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':codigoMunicipio', $codigoMunicipio);
         $stmt->execute();
         $establecimientos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         return $establecimientos;
     }
 
@@ -113,9 +120,9 @@ class MitycFetch {
     private function procesarPrecio($precios, $establecimiento)
     {
         foreach ($precios as $precio) {
-            if($precio['IDEESS'] == $establecimiento['ID_EESS_MITYC']){
+            if ($precio['IDEESS'] == $establecimiento['ID_EESS_MITYC']) {
                 // Se consiguen los productos que se quieren insertar de ese establecimiento
-                $sql = "SELECT * FROM PRODUCTOS_ESTABLECIMIENTOS WHERE CODIGO_EESS = :codigoEESS";
+                $sql = "SELECT * FROM PRODUCTOS_ESTABLECIMIENTOS WHERE CODIGO_EESS = :codigoEESS GROUP BY CODIGO_EESS, CODIGO_PRODUCTO";
                 $stmt = $this->db->prepare($sql);
                 $stmt->bindParam(':codigoEESS', $establecimiento['ID_EESS_MITYC']);
                 $stmt->execute();
@@ -147,13 +154,13 @@ class MitycFetch {
         $stmt->execute();
         $precioActual = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if($precioActual){
-            if($precioActual['PRECIO'] != $precio[$id_producto]){
+        if ($precioActual) {
+            if ($precioActual['PRECIO'] != $precio[$id_producto]) {
                 $this->actualizarPrecio($precio, $establecimiento, $id_producto, $precioActual['CODIGO_PRODUCTO_CA']);
-            }else{
+            } else {
                 $this->actualizarFetchDate($precio, $establecimiento, $id_producto);
             }
-        }else{
+        } else {
             $this->insertpreciotbl($precio, $establecimiento, $id_producto);
         }
     }
@@ -161,7 +168,8 @@ class MitycFetch {
     /**
      * Obtiene las empresas //NU
      */
-    private function GetEmpresaEstablecimiento($establecimiento){
+    private function GetEmpresaEstablecimiento($establecimiento)
+    {
         $sql = "SELECT CODIGO_EMPRESA FROM ESTABLECIMIENTOS_EMPRESA WHERE CODIGO_EESS = :idEESS";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':idEESS', $establecimiento['ID_EESS_MITYC']);
@@ -173,7 +181,8 @@ class MitycFetch {
     /**
      * Obtiene los establecimientos de una empresa TABLA: ESTABLECIMIENTOS_EMPRESA
      */
-    private function GetEstablecimientosEmpresa($codigoEmpresa){
+    private function GetEstablecimientosEmpresa($codigoEmpresa)
+    {
         $sql = "SELECT ESTABLECIMIENTOS_EMPRESA.*,MITYC_ESTABLECIMIENTOS.NOMBRE_ESTABLECIMIENTO FROM ESTABLECIMIENTOS_EMPRESA 
             INNER JOIN MITYC_ESTABLECIMIENTOS ON ESTABLECIMIENTOS_EMPRESA.CODIGO_EESS = MITYC_ESTABLECIMIENTOS.ID_EESS_MITYC
             WHERE CODIGO_EMPRESA = :codigoEmpresa";
@@ -208,21 +217,21 @@ class MitycFetch {
         $stmt->bindParam(':fechaUpd', $date);
         $stmt->bindParam(':fetchDate', $date);
 
-        if($stmt->execute()){
+        if ($stmt->execute()) {
             foreach ($empresa as $emp) {
                 $establecimientos = $this->GetEstablecimientosEmpresa($emp['CODIGO_EMPRESA']);
                 foreach ($establecimientos as $est) {
-                    if($est['CODIGO_EESS'] == $establecimiento['ID_EESS_MITYC']){
+                    if ($est['CODIGO_EESS'] == $establecimiento['ID_EESS_MITYC']) {
                         //se inserta el nuevo precio en la tabla de envios
                         $this->insertPrecioEnvio($emp['CODIGO_EMPRESA'], $est['CODIGO_EESS'], $codigo_ca, $precio[$id_producto], $date);
                     }
                 }
             }
 
-            $this->log->write("Se ha insertado el precio del producto '".$id_producto."' del establecimiento '".$precio['Rótulo']." - ".$establecimiento['ID_EESS_MITYC']."' con el precio '".$precio[$id_producto]."€/L'");
+            $this->log->write("Se ha insertado el precio del producto '" . $id_producto . "' del establecimiento '" . $precio['Rótulo'] . " - " . $establecimiento['ID_EESS_MITYC'] . "' con el precio '" . $precio[$id_producto] . "€/L'");
             return true;
-        }else{
-            $this->log->write("Error al insertar el precio del establecimiento ".$precio['Rótulo']);
+        } else {
+            $this->log->write("Error al insertar el precio del establecimiento " . $precio['Rótulo']);
             return false;
         }
     }
@@ -230,7 +239,8 @@ class MitycFetch {
     /**
      * Actualiza un precio en la base de datos [Actualmente no se usa] --
      */
-    private function actualizarPrecio($precio, $establecimiento, $id_producto, $codigo_ca){
+    private function actualizarPrecio($precio, $establecimiento, $id_producto, $codigo_ca)
+    {
         $date = date('Y-m-d H:i:s');
         $empresas = $this->GetEmpresaEstablecimiento($establecimiento);
 
@@ -247,20 +257,20 @@ class MitycFetch {
         $stmt->bindParam(':fechaUpd', $date);
         $stmt->bindParam(':fetchdate', $date);
 
-        if($stmt->execute()){
+        if ($stmt->execute()) {
             foreach ($empresas as $emp) {
                 $establecimientos = $this->GetEstablecimientosEmpresa($emp['CODIGO_EMPRESA']);
                 foreach ($establecimientos as $est) {
-                    if($est['CODIGO_EESS'] == $establecimiento['ID_EESS_MITYC']){
+                    if ($est['CODIGO_EESS'] == $establecimiento['ID_EESS_MITYC']) {
                         //se inserta el nuevo precio en la tabla de envios
                         $this->insertPrecioEnvio($emp['CODIGO_EMPRESA'], $est['CODIGO_EESS'], $codigo_ca, $precio[$id_producto], $date);
                     }
                 }
             }
-            $this->log->write("Se ha actualizado el precio del establecimiento '".$precio['Rótulo']." - ".$establecimiento['ID_EESS_MITYC']."' con el producto '".$id_producto. "' y el precio '".$precio[$id_producto]."€'");
+            $this->log->write("Se ha actualizado el precio del establecimiento '" . $precio['Rótulo'] . " - " . $establecimiento['ID_EESS_MITYC'] . "' con el producto '" . $id_producto . "' y el precio '" . $precio[$id_producto] . "€'");
             return true;
-        }else{
-            $this->log->write("Error al actualizar el precio del establecimiento ".$precio['Rótulo']);
+        } else {
+            $this->log->write("Error al actualizar el precio del establecimiento " . $precio['Rótulo']);
             return false;
         }
     }
@@ -268,7 +278,8 @@ class MitycFetch {
     /**
      * Inserta el precio en MITYC_PRECIOS_ENVIO
      */
-    private function insertPrecioEnvio($codigo_empresa, $codigo_eess, $codigo_producto_ca, $precio, $fecha){
+    private function insertPrecioEnvio($codigo_empresa, $codigo_eess, $codigo_producto_ca, $precio, $fecha)
+    {
         //comprobar que no existen los mismos datos en la tabla
         $sql = "SELECT * FROM MITYC_PRECIOS_ENVIO 
             WHERE CODIGO_EESS = :codigo_eess 
@@ -284,7 +295,7 @@ class MitycFetch {
         $stmt->bindParam(':fechaIns', $fecha);
         $stmt->execute();
 
-        if($stmt->rowCount() == 0){
+        if ($stmt->rowCount() == 0) {
             $sql = "INSERT INTO MITYC_PRECIOS_ENVIO (CODIGO_EESS,CODIGO_EMPRESA, CODIGO_PRODUCTO_CA, PRECIO, FECHA_INS) 
                 VALUES (:codigo_eess, :codigoEmpresa, :codigoProductoCA, :precio, :fechaIns)";
 
@@ -294,17 +305,17 @@ class MitycFetch {
             $stmt->bindParam(':codigoProductoCA', $codigo_producto_ca);
             $stmt->bindParam(':precio', $precio);
             $stmt->bindParam(':fechaIns', $fecha);
-            $stmt->execute();           
-        
-        }else{
-            $this->log->write("El precio del establecimiento '".$codigo_eess."' con el producto '".$codigo_producto_ca."' y el precio '".$precio."' ya existe en la tabla MITYC_PRECIOS_ENVIO");
+            $stmt->execute();
+        } else {
+            $this->log->write("El precio del establecimiento '" . $codigo_eess . "' con el producto '" . $codigo_producto_ca . "' y el precio '" . $precio . "' ya existe en la tabla MITYC_PRECIOS_ENVIO");
         }
     }
 
     /**
      * Actualiza el campo FETCH_DATE de un precio en la base de datos
      */
-    private function actualizarFetchDate($precio, $establecimiento, $id_producto){
+    private function actualizarFetchDate($precio, $establecimiento, $id_producto)
+    {
         $date = date('Y-m-d H:i:s');
 
         $sql = "UPDATE MITYC_PRECIOS SET FETCH_DATE = :fetchDate 
@@ -316,10 +327,10 @@ class MitycFetch {
         $stmt->bindParam(':idMunicipio', $establecimiento['CODIGO_MUNICIPIO']);
         $stmt->bindParam(':codigoProducto', $id_producto);
         $stmt->bindParam(':fetchDate', $date);
-        
-        if($stmt->execute()){
+
+        if ($stmt->execute()) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -334,7 +345,7 @@ class MitycFetch {
         $stmt->bindParam(':codigoProducto', $codigoProducto);
         $stmt->execute();
         $producto = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         return $producto['CODIGO_CA'];
     }
 

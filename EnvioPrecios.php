@@ -11,7 +11,7 @@ class EnvioPrecios
     public function __construct($host, $port)
     {
         //conexion con el socket
-        $this->socket = new Socket($host, $port);
+        $this->socket = new Socket_Client($host, $port);
         $this->log = new WriteLog();
     }
 

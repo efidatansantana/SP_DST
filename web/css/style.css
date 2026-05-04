@@ -1,8 +1,8 @@
-body{
+body {
     background-color: #f7f5f5;
-    font-family: 'Lato','Roboto', sans-serif;
+    font-family: 'Lato', 'Roboto', sans-serif;
     color: #5a5e60;
-    overflow:auto;
+    overflow: auto;
 }
 
 :root {
@@ -10,7 +10,7 @@ body{
     --bs-primary: #299be4 !important;
 }
 
-pre{
+pre {
     background-color: #232323;
     border: none;
     padding: 0px;
@@ -18,43 +18,44 @@ pre{
     color: white;
 }
 
-nav{
+nav {
     display: flex;
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
-.table-dark{
+.table-dark {
     --bs-table-bg: var(--primary) !important;
 }
 
-.pos-stk{
+.pos-stk {
     position: sticky;
     top: 0;
     z-index: 99;
 }
 
-.btn{
+.btn {
     --bs-btn-border-color: none !important;
 }
 
-.s{
+.s {
     text-decoration: line-through;
 }
 
-th{
+th {
     cursor: pointer;
 }
 
-.s > td{
+.s>td {
     color: #5a5e60 !important;
 }
 
 .justify {
     text-align: justify;
 }
-.nav{
+
+.nav {
     border-radius: 4px;
     border: none;
 }
@@ -68,11 +69,11 @@ th{
     color: white;
 }
 
-.card-body > i{
+.card-body>i {
     font-size: 2rem !important;
 }
 
-.card{
+.card {
     height: 13.3rem !important;
     animation: appear 1s ease-in-out;
     transition: transform .7s;
@@ -80,7 +81,7 @@ th{
 
 .card:hover {
     transform: scale(1.03);
-    box-shadow: 0 0 11px rgba(33,33,33,.2);
+    box-shadow: 0 0 11px rgba(33, 33, 33, .2);
 }
 
 
@@ -89,18 +90,20 @@ th{
         opacity: 0;
         transform: translateY(20px);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-label{
+label {
     font-weight: bold !important;
     color: #000 !important;
 }
 
-#viewContent select, #viewContent button {
+#viewContent select,
+#viewContent button {
     font-size: 15px;
 }
 
@@ -131,11 +134,11 @@ label{
     table-layout: fixed;
 }
 
-#estaciones table thead{
+#estaciones table thead {
     font-size: 1.1rem;
 }
 
-#estaciones thead{
+#estaciones thead {
     position: sticky !important;
     top: 0 !important;
 }
@@ -147,28 +150,30 @@ table td {
     text-align: center;
 }
 
-#search{
+#search {
     margin-top: 5px;
     margin-bottom: 8px;
     width: 48rem;
     height: 2.5rem;
 }
-#mityc_logo{
+
+#mityc_logo {
     margin-top: 25px;
     margin-bottom: 8px;
     display: inline;
     float: left;
 }
-.home_select{
+
+.home_select {
     margin-bottom: 1rem;
     width: 90%;
 }
 
-.productos-multiple{
+.productos-multiple {
     width: 30rem !important;
 }
 
-.text-muted{
+.text-muted {
     color: #5a5e60b6 !important;
 }
 
@@ -177,37 +182,68 @@ table td {
     .container {
         width: 100%;
     }
-    #search{
+
+    #search {
         width: 100%;
     }
-    .home_select{
+
+    .home_select {
         width: 100%;
     }
-    .card{
+
+    .card {
         height: 9rem !important;
     }
 
-    .card > .card-body{
+    .card>.card-body {
         padding: 0px !important;
     }
 
-    .filtros{
+    .filtros {
         margin-bottom: 1rem;
     }
 }
 
 @media only screen and (min-width : 1200px) {
-    .container { max-width: 1500px; } 
+    .container {
+        max-width: 1500px;
+    }
 }
 
 
-.input-group > .select2-container--bootstrap {
+.input-group>.select2-container--bootstrap {
     width: auto;
     flex: 1 1 auto;
 }
 
-.input-group > .select2-container--bootstrap .select2-selection--single {
+.input-group>.select2-container--bootstrap .select2-selection--single {
     height: 100%;
     line-height: inherit;
     padding: 0.5rem 1rem;
+}
+
+.selector-est {
+    width: 100%;
+    padding: 8px 12px;
+    border: 0.5px solid #ced4da;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #fff;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+    transition: border-color .15s, box-shadow .15s;
+}
+
+.selector-est:hover {
+    border-color: #adb5bd;
+}
+
+.selector-est:focus {
+    outline: none;
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, .15);
 }

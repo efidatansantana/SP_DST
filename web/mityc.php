@@ -3,7 +3,9 @@
 <div class="row">
     <div class="col-lg-12 p-4 ps-0">
         <div class="d-flex align-items-center">
-            <a href="index.php" class="btn btn-outline"><h2><i class="bi bi-arrow-left"></i></h2></a>
+            <a href="index.php" class="btn btn-outline">
+                <h2><i class="bi bi-arrow-left"></i></h2>
+            </a>
             <h2><img class="mityc_logo" src="https://geoportalgasolineras.es/geoportal-instalaciones/assets/imagenes/im-open-data.png" alt="" width="50" class="img-responsive"> AGREGAR ESTACIÓN</h2>
         </div>
         <hr />
@@ -17,7 +19,7 @@
 <div class="textAlignCenter">
     <div id="loading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
         <p style="position: absolute; color: White; top: 30%; left: 40%;">
-            <img  src="media/loading.gif" />
+            <img src="media/loading.gif" />
         </p>
     </div>
     <div id="viewContent">
@@ -43,7 +45,7 @@
         </div>
 
         <div class="input-group input-group-sm">
-            <input type="text"  id="search" placeholder="Escribe aquí el nombre de una estación" class="form-control">
+            <input type="text" id="search" placeholder="Escribe aquí el nombre de una estación" class="form-control">
         </div>
 
         <div id="estaciones" class="table-responsive"></div>
